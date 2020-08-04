@@ -1,0 +1,24 @@
+import android.icu.util.Output
+
+println("test start")
+
+task myTask {
+    println 'myTask in configuation'
+    doLast {
+        println 'myTask in run'
+    }
+}
+
+class MyTask2 extends DefaultTask{
+
+    @Input Boolean myInputs
+    @TaskAction
+    void start(){
+
+    }
+
+}
+
+task.create("mytask3").doLast {
+    println("task ")
+}

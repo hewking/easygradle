@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.hewking.easygradle"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+
+gradle.addBuildListener(new BuildListener() {
+    @Override
+    void buildStarted(Gradle gradle) {
+        println("buildStarted 构建开始")
+    }
+
+    @Override
+    void settingsEvaluated(Settings settings) {
+        println("settingsEvaluated 文件解析完成")
+    }
+
+    @Override
+    void projectsLoaded(Gradle gradle) {
+        println("projectsLoaded")
+        gradle.rootProject.subprojects.each {
+            it.beforeEvaluate {
+                println("${it.name} 项目配置之前调用")
+            }
+            it.afterEvaluate {
+                println("${it.name} 项目配置之后调用")
+            }
+        }
+    }
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {
+        println("projectsEvaluated 项目解析完成")
+    }
+
+    @Override
+    void buildFinished(BuildResult result) {
+        println("buildFinished 项目构建完成")
+    }
+})
+
+gradle.taskGraph.whenReady {
+    println("task graph 构建完成")
+}
+
+gradle.taskGraph.beforeTask {
+    println("每个task 执行前都会调用这个方法")
+}
+
+gradle.taskGraph.afterTask {
+    println("每个task 执行后都会调用这个方法")
+}
+
+apply from: "test.gradle"
+
