@@ -1,0 +1,60 @@
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply plugin: 'groovy'
+
+// 用来安装插件到本地mavenlocal
+apply plugin: 'maven'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://maven.google.com'
+        }
+        jcenter()
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url "http://mvn.dianpingoa.com/android-nova"
+    }
+    maven {
+        url 'http://depot.sankuai.com/nexus/content/groups/public/'
+    }
+    maven {
+        url 'https://maven.google.com'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.android.tools.build:gradle:4.0.1'
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.version = '0.0.1' // 配置插件版本号
+        pom.artifactId = 'myplugin' // 配置插件标识
+        pom.groupId = 'com.hewking.plugin' // 配置插件组织
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri("$rootDir/maven"))
+            pom.groupId = "com.hewking.plugin"
+            pom.artifactId = "myplugin"
+            pom.version = "0.0.1"
+        }
+    }
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

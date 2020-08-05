@@ -1,4 +1,3 @@
-import android.icu.util.Output
 
 println("test start")
 
@@ -19,6 +18,6 @@ class MyTask2 extends DefaultTask{
 
 }
 
-task.create("mytask3").doLast {
+tasks.create("mytask3").doLast {
     println("task ")
 }
