@@ -23,6 +23,9 @@ allprojects {
         mavenLocal()
         google()
         jcenter()
+        maven {
+            url uri("$rootDir/maven")
+        }
     }
 }
 

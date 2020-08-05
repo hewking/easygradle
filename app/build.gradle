@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'myplugin'
+//apply plugin: 'my-plugin'
 
 android {
     compileSdkVersion 29
@@ -39,6 +39,7 @@ dependencies {
 }
 
 gradle.addBuildListener(new BuildListener() {
+
     @Override
     void buildStarted(Gradle gradle) {
         println("buildStarted 构建开始")
@@ -71,6 +72,11 @@ gradle.addBuildListener(new BuildListener() {
     void buildFinished(BuildResult result) {
         println("buildFinished 项目构建完成")
     }
+
+    @Override
+    void beforeSettings(Settings settings) {
+        super.beforeSettings(settings)
+    }
 })
 
 gradle.taskGraph.whenReady {
@@ -87,3 +93,67 @@ gradle.taskGraph.afterTask {
 
 apply from: "test.gradle"
 
+class GreetingPluginExtension {
+    String message = "hello from the GreetingPlugin"
+    String greeter
+}
+
+/* 在build.gradle 中编写插件 */
+class GreetingPlugin implements Plugin<Project> {
+    @Override
+    void apply(Project project) {
+
+        // 添加 greeting extension object
+        def extension = project.extensions.create("greeting", GreetingPluginExtension)
+
+        // add a task that use configuration from the extension object
+        project.task("hello").doLast {
+            println "${extension.message} from ${extension.greeter}"
+        }
+    }
+}
+
+apply plugin: GreetingPlugin
+
+// configure the extension
+//greeting.message = "hi from gradle"
+
+// 通过dsl 的方式为extension object 属性赋值
+greeting{
+    message = "hi"
+    greeter = "gradle"
+}
+
+/**
+ * gradle task 对文件操作的 task
+ */
+class GreetingToFileTask extends DefaultTask {
+
+    def destination
+
+    @OutputFile
+    File getDestination(){
+        return project.file(destination)
+    }
+
+    @TaskAction
+    def greet(){
+        def file = getDestination()
+        file.parentFile.mkdirs()
+        file.write 'Hello!'
+    }
+
+}
+
+ext.greetingFile = "$buildDir/hello.txt"
+
+task greet(type: GreetingToFileTask) {
+    // 通过闭包惰性赋值
+    destination = {project.greetingFile}
+}
+
+task sayGreeting(dependsOn: greet) {
+    doLast {
+        println file(greetingFile).text
+    }
+}

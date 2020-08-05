@@ -1,6 +1,8 @@
 
 println("test start")
 
+println("root dir: $rootDir $projectDir")
+
 task myTask {
     println 'myTask in configuation'
     doLast {
@@ -21,3 +23,4 @@ class MyTask2 extends DefaultTask{
 tasks.create("mytask3").doLast {
     println("task ")
 }
+

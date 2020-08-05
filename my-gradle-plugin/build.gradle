@@ -47,6 +47,7 @@ install {
 
 uploadArchives {
     repositories {
+        println("local plugin path: $rootDir/maven")
         mavenDeployer {
             repository(url: uri("$rootDir/maven"))
             pom.groupId = "com.hewking.plugin"
