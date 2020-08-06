@@ -5,6 +5,7 @@ apply plugin: 'groovy'
 
 // 用来安装插件到本地mavenlocal
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 buildscript {
     repositories {
@@ -37,13 +38,13 @@ dependencies {
     implementation 'com.android.tools.build:gradle:4.0.1'
 }
 
-install {
-    repositories.mavenInstaller {
-        pom.version = '0.0.1' // 配置插件版本号
-        pom.artifactId = 'myplugin' // 配置插件标识
-        pom.groupId = 'com.hewking.plugin' // 配置插件组织
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.version = '0.0.1' // 配置插件版本号
+//        pom.artifactId = 'myplugin' // 配置插件标识
+//        pom.groupId = 'com.hewking.plugin' // 配置插件组织
+//    }
+//}
 
 uploadArchives {
     repositories {
@@ -51,7 +52,7 @@ uploadArchives {
         mavenDeployer {
             repository(url: uri("$rootDir/maven"))
             pom.groupId = "com.hewking.plugin"
-            pom.artifactId = "myplugin"
+            pom.artifactId = "myplugin2"
             pom.version = "0.0.1"
         }
     }
