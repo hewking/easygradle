@@ -2,7 +2,19 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'my-plugin'
+boolean isReleaseBuildType(){
+    for(String s : gradle.startParameter.taskNames) {
+        if (s.contains("Release") | s.contains("release")) {
+            return true
+        }
+    }
+    return false
+}
+
+if (isReleaseBuildType()) {
+    apply plugin: 'my-plugin'
+}
+
 
 android {
     compileSdkVersion 29
