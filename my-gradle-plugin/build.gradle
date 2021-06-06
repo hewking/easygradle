@@ -7,27 +7,8 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-buildscript {
-    repositories {
-        mavenLocal()
-        maven {
-            url 'https://maven.google.com'
-        }
-        jcenter()
-    }
-}
-
 repositories {
-    mavenLocal()
-    maven {
-        url "http://mvn.dianpingoa.com/android-nova"
-    }
-    maven {
-        url 'http://depot.sankuai.com/nexus/content/groups/public/'
-    }
-    maven {
-        url 'https://maven.google.com'
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -46,13 +27,16 @@ dependencies {
 //    }
 //}
 
+/**
+ * 发布插件到本地仓库
+ */
 uploadArchives {
     repositories {
-        println("local plugin path: $rootDir/maven")
+//        println("local plugin path: $rootDir/maven")
         mavenDeployer {
-            repository(url: uri("$rootDir/maven"))
+            repository(url: uri('../repo'))
             pom.groupId = "com.hewking.plugin"
-            pom.artifactId = "myplugin2"
+            pom.artifactId = "myplugin"
             pom.version = "0.0.1"
         }
     }

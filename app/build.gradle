@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'my-plugin'
 
 boolean isReleaseBuildType(){
     for(String s : gradle.startParameter.taskNames) {
@@ -11,9 +12,10 @@ boolean isReleaseBuildType(){
     return false
 }
 
-if (isReleaseBuildType()) {
-    apply plugin: 'my-plugin'
-}
+//if (isReleaseBuildType()) {
+    // my-plugin.properites 的名字
+//    apply plugin: 'myplugin'
+//}
 
 
 android {
@@ -50,122 +52,122 @@ dependencies {
 
 }
 
-gradle.addBuildListener(new BuildListener() {
-
-    @Override
-    void buildStarted(Gradle gradle) {
-        println("buildStarted 构建开始")
-    }
-
-    @Override
-    void settingsEvaluated(Settings settings) {
-        println("settingsEvaluated 文件解析完成")
-    }
-
-    @Override
-    void projectsLoaded(Gradle gradle) {
-        println("projectsLoaded")
-        gradle.rootProject.subprojects.each {
-            it.beforeEvaluate {
-                println("${it.name} 项目配置之前调用")
-            }
-            it.afterEvaluate {
-                println("${it.name} 项目配置之后调用")
-            }
-        }
-    }
-
-    @Override
-    void projectsEvaluated(Gradle gradle) {
-        println("projectsEvaluated 项目解析完成")
-    }
-
-    @Override
-    void buildFinished(BuildResult result) {
-        println("buildFinished 项目构建完成")
-    }
-
-    @Override
-    void beforeSettings(Settings settings) {
-        super.beforeSettings(settings)
-    }
-})
-
-gradle.taskGraph.whenReady {
-    println("task graph 构建完成")
-}
-
-gradle.taskGraph.beforeTask {
-    println("每个task 执行前都会调用这个方法")
-}
-
-gradle.taskGraph.afterTask {
-    println("每个task 执行后都会调用这个方法")
-}
-
-apply from: "test.gradle"
-
-class GreetingPluginExtension {
-    String message = "hello from the GreetingPlugin"
-    String greeter
-}
-
-/* 在build.gradle 中编写插件 */
-class GreetingPlugin implements Plugin<Project> {
-    @Override
-    void apply(Project project) {
-
-        // 添加 greeting extension object
-        def extension = project.extensions.create("greeting", GreetingPluginExtension)
-
-        // add a task that use configuration from the extension object
-        project.task("hello").doLast {
-            println "${extension.message} from ${extension.greeter}"
-        }
-    }
-}
-
-apply plugin: GreetingPlugin
-
-// configure the extension
-//greeting.message = "hi from gradle"
-
-// 通过dsl 的方式为extension object 属性赋值
-greeting{
-    message = "hi"
-    greeter = "gradle"
-}
-
-/**
- * gradle task 对文件操作的 task
- */
-class GreetingToFileTask extends DefaultTask {
-
-    def destination
-
-    @OutputFile
-    File getDestination(){
-        return project.file(destination)
-    }
-
-    @TaskAction
-    def greet(){
-        def file = getDestination()
-        file.parentFile.mkdirs()
-        file.write 'Hello!'
-    }
-
-}
-
-ext.greetingFile = "$buildDir/hello.txt"
-
-task greet(type: GreetingToFileTask) {
-    // 通过闭包惰性赋值
-    destination = {project.greetingFile}
-}
-
-task sayGreeting(dependsOn: greet) {
-    doLast {
-        println file(greetingFile).text
-    }
-}
+//gradle.addBuildListener(new BuildListener() {
+//
+//    @Override
+//    void buildStarted(Gradle gradle) {
+//        println("buildStarted 构建开始")
+//    }
+//
+//    @Override
+//    void settingsEvaluated(Settings settings) {
+//        println("settingsEvaluated 文件解析完成")
+//    }
+//
+//    @Override
+//    void projectsLoaded(Gradle gradle) {
+//        println("projectsLoaded")
+//        gradle.rootProject.subprojects.each {
+//            it.beforeEvaluate {
+//                println("${it.name} 项目配置之前调用")
+//            }
+//            it.afterEvaluate {
+//                println("${it.name} 项目配置之后调用")
+//            }
+//        }
+//    }
+//
+//    @Override
+//    void projectsEvaluated(Gradle gradle) {
+//        println("projectsEvaluated 项目解析完成")
+//    }
+//
+//    @Override
+//    void buildFinished(BuildResult result) {
+//        println("buildFinished 项目构建完成")
+//    }
+//
+//    @Override
+//    void beforeSettings(Settings settings) {
+//        super.beforeSettings(settings)
+//    }
+//})
+//
+//gradle.taskGraph.whenReady {
+//    println("task graph 构建完成")
+//}
+//
+//gradle.taskGraph.beforeTask {
+//    println("每个task 执行前都会调用这个方法")
+//}
+//
+//gradle.taskGraph.afterTask {
+//    println("每个task 执行后都会调用这个方法")
+//}
+//
+//apply from: "test.gradle"
+//
+//class GreetingPluginExtension {
+//    String message = "hello from the GreetingPlugin"
+//    String greeter
+//}
+//
+///* 在build.gradle 中编写插件 */
+//class GreetingPlugin implements Plugin<Project> {
+//    @Override
+//    void apply(Project project) {
+//
+//        // 添加 greeting extension object
+//        def extension = project.extensions.create("greeting", GreetingPluginExtension)
+//
+//        // add a task that use configuration from the extension object
+//        project.task("hello").doLast {
+//            println "${extension.message} from ${extension.greeter}"
+//        }
+//    }
+//}
+//
+//apply plugin: GreetingPlugin
+//
+//// configure the extension
+////greeting.message = "hi from gradle"
+//
+//// 通过dsl 的方式为extension object 属性赋值
+//greeting{
+//    message = "hi"
+//    greeter = "gradle"
+//}
+//
+///**
+// * gradle task 对文件操作的 task
+// */
+//class GreetingToFileTask extends DefaultTask {
+//
+//    def destination
+//
+//    @OutputFile
+//    File getDestination(){
+//        return project.file(destination)
+//    }
+//
+//    @TaskAction
+//    def greet(){
+//        def file = getDestination()
+//        file.parentFile.mkdirs()
+//        file.write 'Hello!'
+//    }
+//
+//}
+//
+//ext.greetingFile = "$buildDir/hello.txt"
+//
+//task greet(type: GreetingToFileTask) {
+//    // 通过闭包惰性赋值
+//    destination = {project.greetingFile}
+//}
+//
+//task sayGreeting(dependsOn: greet) {
+//    doLast {
+//        println file(greetingFile).text
+//    }
+//}
